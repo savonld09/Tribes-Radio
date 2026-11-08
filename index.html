@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Tribes Radio</title>
+<meta name="description" content="Hebrew Israelite music radio: R&B, Rap, Gospel, Women's Hour and more.">
+<meta name="theme-color" content="#0b0a08">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Tribes Radio">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="app.css">
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="brand">
+      <div class="logo" id="logoTxt">TR</div>
+      <div>
+        <h1 id="radioName">Tribes Radio</h1>
+        <small id="tagline"></small>
+      </div>
+    </div>
+    <div class="head-actions">
+      <span class="live" id="liveBadge"><i></i>ON AIR</span>
+      <button class="btn" id="installBtn" hidden>Install app</button>
+      <button class="btn primary" id="accountBtn" hidden>Sign in</button>
+    </div>
+  </header>
+
+  <div class="banner" id="subBanner" hidden>
+    <div><b>Unlock every station</b><span id="bannerText"></span></div>
+    <button class="btn primary" id="bannerBtn">Subscribe</button>
+  </div>
+
+  <section class="hero" id="hero">
+    <div class="art" id="art">
+      <img id="artImg" alt="" hidden>
+      <div class="big" id="artName">Tune In</div>
+      <div class="eq"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div>
+    </div>
+    <div class="np">
+      <div class="np-label" id="npLabel">Pick a station</div>
+      <div class="np-title" id="npTitle">Shalom</div>
+      <div class="np-artist" id="npArtist">Choose a station below to start listening.</div>
+      <div class="np-station" id="npStation"></div>
+      <div class="controls">
+        <button class="ctl" id="prevBtn" aria-label="Previous station"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M6 5h2v14H6zM20 5v14L9 12z"/></svg></button>
+        <button class="play" id="playBtn" aria-label="Play"><svg id="playIco" viewBox="0 0 24 24" fill="currentColor"><path d="M7 4v16l13-8z"/></svg></button>
+        <button class="ctl" id="nextBtn" aria-label="Next station"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M16 5h2v14h-2zM4 5v14l11-7z"/></svg></button>
+        <div class="vol">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M4 9v6h4l5 5V4L8 9z"/></svg>
+          <input type="range" id="vol" min="0" max="1" step="0.01" value="0.9" aria-label="Volume">
+        </div>
+      </div>
+      <div class="err" id="err"></div>
+    </div>
+  </section>
+
+  <h2>Stations</h2>
+  <div class="stations" id="stations"></div>
+
+  <div class="lists">
+    <div>
+      <h2>Up Next</h2>
+      <div class="queue" id="nextList"><div class="empty">Tune in to see what's coming up.</div></div>
+    </div>
+    <div>
+      <h2>Recently Played</h2>
+      <div class="queue" id="histList"><div class="empty">Nothing yet.</div></div>
+    </div>
+  </div>
+</div>
+
+<div class="bar"><div class="wrap">
+  <button class="play" id="miniPlay" aria-label="Play"><svg id="miniIco" viewBox="0 0 24 24" fill="currentColor"><path d="M7 4v16l13-8z"/></svg></button>
+  <div class="mt"><b id="miniTitle">Not playing</b><span id="miniSub"></span></div>
+  <button class="ctl" id="miniNext" aria-label="Next station"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M16 5h2v14h-2zM4 5v14l11-7z"/></svg></button>
+</div></div>
+
+<!-- One reusable dialog for sign-in, subscribe, account and install help -->
+<div class="modal" id="modal" role="dialog" aria-modal="true"><div class="sheet" id="sheet"></div></div>
+<div class="toast" id="toast"></div>
+<audio id="audio" preload="none"></audio>
+
+<script src="config.js"></script>
+<script type="module" src="app.js"></script>
+</body>
+</html>

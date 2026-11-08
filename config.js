@@ -35,9 +35,6 @@ window.RADIO_CONFIG = {
     { id: 'rnb',     name: 'R&B / Soul',      color: '#c86bd9', free: false, stream: '', nowPlaying: '' },
     { id: 'rap',     name: 'Rap / Hip-Hop',   color: '#e0483e', free: false, stream: '', nowPlaying: '' },
     { id: 'women',   name: "Women's Hour",    color: '#f08fb0', free: false, stream: '', nowPlaying: '' },
-    { id: 'sabbath', name: 'Sabbath Songs',   color: '#5aa0e6', free: false, stream: '', nowPlaying: '' },
     { id: 'feast',   name: 'Feast Days',      color: '#58c48b', free: false, stream: '', nowPlaying: '' },
-    { id: 'reggae',  name: 'Reggae',          color: '#9bd04a', free: false, stream: '', nowPlaying: '' },
-    { id: 'instr',   name: 'Instrumentals',   color: '#8f8aa8', free: false, stream: '', nowPlaying: '' },
   ],
 };

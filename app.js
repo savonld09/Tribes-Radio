@@ -210,7 +210,7 @@ function showSong(song, next, history) {
     try {
       navigator.mediaSession.metadata = new MediaMetadata({
         title: song.title || cur.name, artist: song.artist || '', album: cur.name + ' · ' + C.name,
-        artwork: song.art ? [{ src: song.art, sizes: '512x512' }] : [{ src: 'icons/icon-512.png', sizes: '512x512', type: 'image/png' }],
+        artwork: song.art ? [{ src: song.art, sizes: '512x512' }] : [{ src: 'icon-512.png', sizes: '512x512', type: 'image/png' }],
       });
     } catch (e) {}
   }

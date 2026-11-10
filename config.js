@@ -13,8 +13,8 @@ window.RADIO_CONFIG = {
 
   // ---- Subscription ----
   price: '$5/month',
-  supabaseUrl: '',          // e.g. 'https://abcd1234.supabase.co'
-  supabaseAnonKey: '',      // the "anon / public" key (safe to put here)
+   supabaseUrl: 'https://ouholyfevwrwsjmpduvv.supabase.co',
+  supabaseAnonKey: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im91aG9seWZldndyd3NqbXBkdXZ2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTQyNjE3NzAsImV4cCI6MjEwOTgzNzc3MH0.SKVDYob4MMLOWZDHuG7EuLZiX9bjdE977t5tychhTEQ',
   stripePaymentLink: '',    // e.g. 'https://buy.stripe.com/xxxx'
   stripePortalLink: '',     // e.g. 'https://billing.stripe.com/p/login/xxxx'
 

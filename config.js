@@ -15,7 +15,7 @@ window.RADIO_CONFIG = {
   price: '$5/month',
    supabaseUrl: 'https://ouholyfevwrwsjmpduvv.supabase.co',
   supabaseAnonKey: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im91aG9seWZldndyd3NqbXBkdXZ2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTQyNjE3NzAsImV4cCI6MjEwOTgzNzc3MH0.SKVDYob4MMLOWZDHuG7EuLZiX9bjdE977t5tychhTEQ',
-  stripePaymentLink: '',    // e.g. 'https://buy.stripe.com/xxxx'
+    stripePaymentLink: 'https://buy.stripe.com/test_5kQ00kaOL5R3fyb13LaMU00',
   stripePortalLink: '',     // e.g. 'https://billing.stripe.com/p/login/xxxx'
 
   // ---- Stream lock (Cloudflare Worker) ----

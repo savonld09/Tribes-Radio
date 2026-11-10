@@ -329,7 +329,7 @@ async function initAccounts() {
     if (was !== user?.id) await checkSubscription();
   });
   // Back from Stripe checkout: Stripe tells our server a moment later, so check a few times.
-  if (location.hash === '#subscribed') {
+       if (location.hash === '#subscribed' || new URLSearchParams(location.search).has('subscribed')) {
     history.replaceState(null, '', location.pathname);
     toast('Thank you! Activating your subscription…');
     for (let i = 0; i < 6 && !subscribed; i++) { await new Promise(r => setTimeout(r, 2500)); await checkSubscription(); }

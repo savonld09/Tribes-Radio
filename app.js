@@ -32,20 +32,34 @@ setAccent(C.color);
 
 // ---------------------------------------------------------------- stations
 function renderStations() {
-  $('#stations').innerHTML = C.stations.map((st, i) => {
+  // this line turns each station into a chuck of button html and inner html = puts all of those buttons onto the page inside the stations element
+  $(`#stations`).innerHTML = C.stations.map((st, i) => {
+    // this compares the stations id with cur to see if it is currently playing
     const on = cur && cur.id === st.id;
+    // this line creates an empty tag for each station
     let tag = '';
+    //this line creates a condition that if it is on it gets tagged as LIVE
     if (on && wantPlaying) tag = '<span class="badge">LIVE</span>';
+    // this line  creates a condition that if there is a pay wall on a locked channel it receives a lock tag and the user is not subscribed
     else if (PAYWALL && !st.free && !subscribed) tag = '<span class="lock">🔒 Subscribers</span>';
+    // this line creates a condition that if theres a paywall and its a free channel it creates a FREE tag
     else if (PAYWALL && st.free && !subscribed) tag = '<span class="free">FREE</span>';
+    // this line starts the button, adds the class on so the button is highlighted, sets the stations color and stores the stations position for line 62
     return `<button class="station ${on ? 'on' : ''}" style="--c:${esc(st.color)}" data-i="${i}">
-      ${tag}
+    <!-- this line creates a space to hold the above labels -->
+  ${tag}   
+      <!-- this line labels a frequency for each station that is just for display -->
       <div class="freq">${(88.1 + i * 1.6).toFixed(1)} FM</div>
-      <div class="nm">${esc(st.name)}</div>
-      <div class="ct">${on ? 'Now listening' : 'Tap to tune in'}</div>
-    </button>`;
-  }).join('');
-  document.querySelectorAll('.station').forEach(b => b.onclick = () => tune(C.stations[+b.dataset.i]));
+      <!-- this tag makes the name safe to put into HTML so that it doesnt break the page -->
+     <div class="nm">${esc(st.name)}</div>
+      <!-- this tag creates different status labels for each station -->
+     <div class="ct">${on ? 'Now listening' : 'Tap to tune in'}</div>
+        <!-- this line generates the button -->
+</button>`;
+    // this line takes the list of HTML strings from .map() and glues them into one string so innerHTML can use it
+ }).join('');
+  // this line  finds each station button and gives them a 1 click option. when tapped it reads the data.i number, + turns text into a number, gets the matching station from C.stations and calls tune() to play it
+document.querySelectorAll('.station').forEach(b => b.onclick = () => tune(C.stations[+b.dataset.i]));
 }
 
 // ---------------------------------------------------------------- playback

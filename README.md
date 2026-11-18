@@ -81,6 +81,17 @@ The Supabase database schema, the Stripe webhook Edge Function and the Cloudflar
 
 I designed Tribes Radio and built it with AI-assisted development (Claude). I set up and configured every service myself (Supabase, Stripe, Cloudflare, DigitalOcean and AzuraCast), tested each part, and debugged problems from logs. As I work through the Meta Front-End Developer certificate, I plan to rewrite parts of the front end by hand.
 
+## Lighthouse audit (Nov 18, 2026, mobile)
+
+| Performance | Accessibility | Best Practices | SEO |
+|---|---|---|---|
+| 89 | 100 | 100 | 100 |
+
+- Fixed: added a `<main>` landmark (Accessibility 98 → 100).
+- Next: load Google Fonts without blocking rendering (est. 780 ms saved) and reserve space for the subscribe banner to reduce layout shift (CLS 0.102).
+
+![Lighthouse scores](docs/lighthouse-after.png)
+
 ## What's next
 
 - In-app feedback button so listeners can rate the app, report bugs and leave comments (saved to Supabase and reviewed weekly)

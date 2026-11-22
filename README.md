@@ -77,6 +77,17 @@ The Supabase database schema, the Stripe webhook Edge Function and the Cloudflar
 - **Webhook and API failures:** I used the Supabase and Cloudflare logs to track down 404 and 500 errors and get the Stripe webhook syncing subscriptions correctly.
 - **Keeping paid streams private:** I moved stream access behind a Cloudflare Worker, so the app never exposes the real stream addresses and non-subscribers can't play locked stations.
 
+## Definition of Done
+
+A change counts as done when:
+
+- It works on phone and desktop
+- There are no red errors in the browser Console
+- It has a test case, and the test passes
+- Any bug was logged in Jira before it was fixed
+- The work was done on a Git branch, then merged
+- The live site was checked after pushing
+
 ## How I built it
 
 I designed Tribes Radio and built it with AI-assisted development (Claude). I set up and configured every service myself (Supabase, Stripe, Cloudflare, DigitalOcean and AzuraCast), tested each part, and debugged problems from logs. As I work through the Meta Front-End Developer certificate, I plan to rewrite parts of the front end by hand.

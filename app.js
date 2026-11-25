@@ -13,6 +13,7 @@ let cur = null;            // current station object
 let wantPlaying = false;   // user pressed play (used for auto-reconnect)
 let retries = 0;
 let npTimer = null;
+let switching = false;     // true while changing the stream source
 
 // ---------------------------------------------------------------- helpers
 function toast(msg) {
@@ -106,8 +107,9 @@ async function start() {
   }
   wantPlaying = true;
   setLoading(true);
+  switching = true;
   audio.src = url;
-  try { await audio.play(); } catch (e) { setLoading(false); wantPlaying = false; }
+  try { await audio.play(); } catch (e) { switching = false; setLoading(false); wantPlaying = false; }
   updateIcons(); renderStations();
 }
 
@@ -115,6 +117,14 @@ function stop() {
   wantPlaying = false;
   audio.pause();
   audio.removeAttribute('src'); audio.load(); // drop the connection; live radio resumes at "now"
+  setLoading(false); updateIcons(); renderStations();
+}
+
+// KAN-11: pause from the lock screen without ending the media session
+function softPause() {
+  wantPlaying = false;
+  clearTimeout(waitTimer);
+  audio.pause();
   setLoading(false); updateIcons(); renderStations();
 }
 
@@ -134,9 +144,15 @@ function step(dir) {
   tune(list[(i + dir + list.length) % list.length]);
 }
 
-audio.addEventListener('playing', () => { clearTimeout(waitTimer); setLoading(false); retries = 0; $('#err').textContent = ''; updateIcons(); });
+audio.addEventListener('playing', () => { clearTimeout(waitTimer); setLoading(false); retries = 0; $('#err').textContent = ''; updateIcons(); });audio.addEventListener('playing', () => { switching = false; clearTimeout(waitTimer); setLoading(false); retries = 0; $('#err').textContent = ''; updateIcons(); });
 audio.addEventListener('waiting', () => setLoading(true));
-audio.addEventListener('pause', updateIcons);
+// KAN-13: if the browser pauses on its own (headphones unplugged), update our state
+audio.addEventListener('pause', () => {
+  if (wantPlaying && !switching && navigator.onLine) {
+    wantPlaying = false; clearTimeout(waitTimer); setLoading(false);
+  }
+  updateIcons(); renderStations();
+});
 audio.addEventListener('error', reconnect);
 audio.addEventListener('ended', reconnect);
 audio.addEventListener('stalled', () => { if (wantPlaying) setTimeout(() => { if (audio.paused && wantPlaying) reconnect(); }, 8000); });
@@ -190,8 +206,8 @@ $('#vol').oninput = e => { audio.volume = +e.target.value; };
 if ('mediaSession' in navigator) {
   const ms = navigator.mediaSession;
   const h = (a, f) => { try { ms.setActionHandler(a, f); } catch (e) {} };
-  h('play', () => { if (!wantPlaying) togglePlay(); });
-  h('pause', () => { if (wantPlaying) stop(); });
+  h('play', () => { if (!wantPlaying) { if (cur) start(); else togglePlay(); } });
+  h('pause', () => { if (wantPlaying) softPause(); });
   h('stop', stop);
   h('nexttrack', () => step(1));
   h('previoustrack', () => step(-1));

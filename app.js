@@ -357,8 +357,17 @@ function renderAccount() {
 $('#accountBtn').onclick = () => user ? openAccount() : openSignIn();
 $('#bannerBtn').onclick = () => openSubscribe();
 
+// KAN-10: Supabase sends expired or reused links back with an error in the URL
+function readAuthError() {
+  const p = new URLSearchParams(location.hash.slice(1) + '&' + location.search.slice(1));
+  if (!p.get('error') && !p.get('error_code')) return null;
+  history.replaceState(null, '', location.pathname); // clean the address bar
+  return p.get('error_code') || p.get('error');
+}
+
 async function initAccounts() {
   if (!PAYWALL) { renderAccount(); return; }
+    const authErr = readAuthError();
   try {
     const mod = await import('https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm');
     supabase = mod.createClient(C.supabaseUrl, C.supabaseAnonKey);
@@ -366,6 +375,7 @@ async function initAccounts() {
   const { data } = await supabase.auth.getSession();
   user = data.session?.user || null;
   await checkSubscription();
+    if (authErr && !user) openSignIn("That sign-in link has expired or was already used. Enter your email and we'll send you a new one.");
   supabase.auth.onAuthStateChange(async (_evt, session) => {
     const was = user?.id; user = session?.user || null;
     if (was !== user?.id) await checkSubscription();

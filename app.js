@@ -134,12 +134,25 @@ function step(dir) {
   tune(list[(i + dir + list.length) % list.length]);
 }
 
-audio.addEventListener('playing', () => { setLoading(false); retries = 0; updateIcons(); });
+audio.addEventListener('playing', () => { clearTimeout(waitTimer); setLoading(false); retries = 0; $('#err').textContent = ''; updateIcons(); });
 audio.addEventListener('waiting', () => setLoading(true));
 audio.addEventListener('pause', updateIcons);
 audio.addEventListener('error', reconnect);
 audio.addEventListener('ended', reconnect);
 audio.addEventListener('stalled', () => { if (wantPlaying) setTimeout(() => { if (audio.paused && wantPlaying) reconnect(); }, 8000); });
+// KAN-7: tell the listener when the connection drops, and resume when it's back
+window.addEventListener('offline', () => {
+  if (wantPlaying) $('#err').textContent = "You're offline. We'll reconnect when you're back.";
+});
+window.addEventListener('online', () => {
+  if (wantPlaying) { retries = 0; $('#err').textContent = 'Reconnecting…'; start(); }
+});
+// If the stream is stuck buffering for 8 seconds, treat it as a drop
+let waitTimer = null;
+audio.addEventListener('waiting', () => {
+  clearTimeout(waitTimer);
+  waitTimer = setTimeout(() => { if (wantPlaying) reconnect(); }, 8000);
+});
 
 function reconnect() {
   if (!wantPlaying || !audio.getAttribute('src')) return;

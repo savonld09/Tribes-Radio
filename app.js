@@ -144,8 +144,7 @@ function step(dir) {
   tune(list[(i + dir + list.length) % list.length]);
 }
 
-audio.addEventListener('playing', () => { clearTimeout(waitTimer); setLoading(false); retries = 0; $('#err').textContent = ''; updateIcons(); });audio.addEventListener('playing', () => { switching = false; clearTimeout(waitTimer); setLoading(false); retries = 0; $('#err').textContent = ''; updateIcons(); });
-audio.addEventListener('waiting', () => setLoading(true));
+audio.addEventListener('playing', () => { clearTimeout(waitTimer); setLoading(false); retries = 0; $('#err').textContent = ''; updateIcons(); });
 // KAN-13: if the browser pauses on its own (headphones unplugged), update our state
 audio.addEventListener('pause', () => {
   if (wantPlaying && !switching && navigator.onLine) {

@@ -76,7 +76,16 @@ async function streamUrl(st) {
   return st.stream + (st.stream.includes('?') ? '&' : '?') + 't=' + Date.now(); // jump to the live point
 }
 
+// KAN-15: one place for the offline message
+function offlineNotice() {
+  $('#err').textContent = wantPlaying
+    ? "You're offline. We'll reconnect when you're back."
+    : "You're offline. Connect to the internet to listen.";
+  updateIcons();
+}
+
 async function tune(st) {
+    if (!navigator.onLine) return offlineNotice();
   if (!canPlay(st)) return openSubscribe(st);
   cur = st; retries = 0;
   setAccent(st.color);
@@ -95,6 +104,7 @@ async function tune(st) {
 
 async function start() {
   if (!cur) return;
+    if (!navigator.onLine) { setLoading(false); return offlineNotice(); }
   $('#err').textContent = '';
   const url = await streamUrl(cur);
   if (!url) {
@@ -367,6 +377,11 @@ function readAuthError() {
 
 async function initAccounts() {
   if (!PAYWALL) { renderAccount(); return; }
+    if (!navigator.onLine) {
+    $('#subBanner').hidden = true;                                   // don't nag while offline
+    window.addEventListener('online', initAccounts, { once: true }); // finish sign-in when back
+    return;
+  }
     const authErr = readAuthError();
   try {
     const mod = await import('https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm');
@@ -410,3 +425,4 @@ if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catc
 // ---------------------------------------------------------------- start
 renderStations();
 initAccounts();
+if (!navigator.onLine) offlineNotice();

@@ -84,6 +84,27 @@ function offlineNotice() {
   updateIcons();
 }
 
+// KAN-14: AzuraCast plays fallback static when a station is offline, so check before playing.
+// Fails open: if the check itself fails, we still try to play.
+async function isOnline(st) {
+  const url = npUrl(st);
+  if (!url) return true;
+  try {
+    const r = await fetch(url, { cache: 'no-store' });
+    if (!r.ok) return true;
+    const d = await r.json();
+    return d.is_online !== false;
+  } catch (e) { return true; }
+}
+
+function offAir() {
+  wantPlaying = false; setLoading(false);
+  if (audio.getAttribute('src')) { audio.pause(); audio.removeAttribute('src'); audio.load(); }
+  $('#npTitle').textContent = 'Off air';
+  $('#npArtist').textContent = 'This station is offline right now. Try another station.';
+  updateIcons(); renderStations();
+}
+
 async function tune(st) {
     if (!navigator.onLine) return offlineNotice();
   if (!canPlay(st)) return openSubscribe(st);
@@ -115,6 +136,7 @@ async function start() {
       : 'This station has no stream address yet. Add it in config.js.';
     return;
   }
+  if (!(await isOnline(cur))) return offAir();
   wantPlaying = true;
   setLoading(true);
   switching = true;
@@ -243,6 +265,7 @@ async function fetchNowPlaying() {
     if (!r.ok) throw 0;
     const d = await r.json();
     if (cur !== st) return;
+    if (d.is_online === false) { if (wantPlaying || $('#npTitle').textContent !== 'Off air') offAir(); return; }
     showSong(d.now_playing?.song, d.playing_next?.song, d.song_history || []);
   } catch (e) { /* keep last info */ }
 }

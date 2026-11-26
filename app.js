@@ -333,7 +333,7 @@ function openAccount() {
     <p>${esc(user.email || '')}<br>Status: <b style="color:var(--text)">${subscribed ? 'Subscribed ✓' : 'Free listener'}</b></p>
     <div class="stack">
       ${subscribed
-        ? (C.stripePortalLink ? `<a class="btn block" style="text-align:center;text-decoration:none" href="${esc(C.stripePortalLink)}">Manage or cancel subscription</a>` : '')
+        ? (C.stripePortalLink ? `<a class="btn block" href="${esc(C.stripePortalLink)}">Manage or cancel subscription</a>` : '')
         : `<button class="btn primary block" id="accSub">Subscribe – ${esc(C.price)}</button>`}
       <button class="btn block" id="signOut">Sign out</button>
     </div>`);

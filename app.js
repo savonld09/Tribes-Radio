@@ -341,6 +341,42 @@ function openAccount() {
   $('#signOut').onclick = async () => { await supabase.auth.signOut(); closeModal(); toast('Signed out'); };
 }
 
+// ---------------------------------------------------------------- feedback
+function openFeedback() {
+  openModal(`<h3>Send feedback</h3>
+    <p>Found a bug or have an idea? Tell us. We read every message.</p>
+    <form class="stack" id="fbForm">
+      <select id="fbType" aria-label="Feedback type">
+        <option value="bug">Something isn't working</option>
+        <option value="idea">Idea or request</option>
+        <option value="music">Music or station</option>
+        <option value="other">Other</option>
+      </select>
+      <textarea id="fbMsg" maxlength="1000" required placeholder="What happened, or what would you like to see?"></textarea>
+      <input type="email" id="fbEmail" placeholder="Email (optional, if you'd like a reply)" autocomplete="email" value="${esc(user?.email || '')}">
+      <button class="btn primary block" id="fbSend">Send</button>
+    </form>`);
+  $('#fbForm').onsubmit = async e => {
+    e.preventDefault();
+    const message = $('#fbMsg').value.trim();
+    if (!message) return;
+    if (!navigator.onLine) return toast("You're offline. Try again when you're connected.");
+    if (!supabase) return toast("Feedback isn't available right now.");
+    $('#fbSend').disabled = true; $('#fbSend').textContent = 'Sending…';
+    const { error } = await supabase.from('feedback').insert({
+      user_id: user?.id || null,
+      email: $('#fbEmail').value.trim() || null,
+      category: $('#fbType').value,
+      message,
+      station: cur?.id || null,
+      user_agent: navigator.userAgent.slice(0, 300),
+    });
+    if (error) { console.error(error); $('#fbSend').disabled = false; $('#fbSend').textContent = 'Send'; return toast("Couldn't send. Please try again."); }
+    closeModal(); toast('Thanks! Feedback sent.');
+  };
+}
+$('#feedbackBtn').onclick = openFeedback;
+
 // ---------------------------------------------------------------- accounts & subscription
 async function checkSubscription() {
   subscribed = false;

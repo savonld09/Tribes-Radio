@@ -5,7 +5,9 @@
   --accent:#e3b34a;
 }
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-html,body{margin:0;background:var(--bg);color:var(--text);font-family:Inter,system-ui,sans-serif}
+/* KAN-5: Arial sized to match Inter, so text doesn't jump when Inter loads */
+@font-face{font-family:'Inter Fallback';src:local('Arial');size-adjust:107.12%;ascent-override:90.44%;descent-override:22.52%;line-gap-override:0%}
+html,body{margin:0;background:var(--bg);color:var(--text);font-family:Inter,'Inter Fallback',system-ui,sans-serif}
 body{min-height:100vh;padding-bottom:calc(110px + env(safe-area-inset-bottom));
   padding-top:env(safe-area-inset-top);
   background:radial-gradient(1200px 500px at 50% -150px, color-mix(in srgb,var(--accent) 22%, transparent), transparent 70%), var(--bg)}

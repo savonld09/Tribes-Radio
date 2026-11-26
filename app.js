@@ -361,7 +361,7 @@ function openAccount() {
       <button class="btn block" id="signOut">Sign out</button>
     </div>`);
   const s = $('#accSub'); if (s) s.onclick = () => openSubscribe();
-  $('#signOut').onclick = async () => { await supabase.auth.signOut(); closeModal(); toast('Signed out'); };
+  $('#signOut').onclick = async () => { try { localStorage.removeItem('tr_sub'); } catch (e) {} await supabase.auth.signOut(); closeModal(); toast('Signed out'); };
 }
 
 // ---------------------------------------------------------------- feedback
@@ -417,6 +417,8 @@ function renderAccount() {
   btn.classList.toggle('primary', !user);
   const banner = $('#subBanner');
   banner.hidden = !PAYWALL || subscribed;
+  // KAN-5: remember for next visit so the banner is right from the first paint
+  if (user) { try { localStorage.setItem('tr_sub', subscribed ? '1' : '0'); } catch (e) {} }
   $('#bannerText').textContent = ` ${C.price} for all ${C.stations.length} stations. Cancel anytime.`;
   renderStations();
   // Stop a locked station if the subscription ended

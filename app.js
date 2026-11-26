@@ -457,6 +457,8 @@ async function initAccounts() {
   // Back from Stripe checkout: Stripe tells our server a moment later, so check a few times.
        if (location.hash === '#subscribed' || new URLSearchParams(location.search).has('subscribed')) {
     history.replaceState(null, '', location.pathname);
+    // KAN-16: if this browser has no session (e.g. checkout started on another site or browser), ask them to sign in
+    if (!user) return openSignIn('Payment received, thank you! Sign in with the same email you used at checkout to unlock every station.');
     toast('Thank you! Activating your subscription…');
     for (let i = 0; i < 6 && !subscribed; i++) { await new Promise(r => setTimeout(r, 2500)); await checkSubscription(); }
     toast(subscribed ? 'Subscribed! Every station is unlocked.' : 'Payment received. Refresh in a minute if stations are still locked.');

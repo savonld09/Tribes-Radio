@@ -20,6 +20,8 @@ Status: pre-launch, running in Stripe test mode with test tracks.
 - **Protected streams:** paid stations only play for active subscribers, and the real stream addresses stay hidden
 - **Now playing, up next and recently played:** song info updates live from the streaming server
 - **Installable app:** add it to a phone's home screen, with lock-screen play/pause controls and offline caching of the app shell
+- **Off-air detection:** if a station's AutoDJ stops, the app shows "Off air" instead of playing the server's fallback static
+- **In-app feedback:** listeners can report bugs or send ideas, saved to Supabase (insert-only, row-level security)
 
 ## How it works
 
@@ -76,6 +78,9 @@ The Supabase database schema, the Stripe webhook Edge Function and the Cloudflar
 - **Server overload:** I diagnosed CPU and memory overload on the streaming server and scaled it up.
 - **Webhook and API failures:** I used the Supabase and Cloudflare logs to track down 404 and 500 errors and get the Stripe webhook syncing subscriptions correctly.
 - **Keeping paid streams private:** I moved stream access behind a Cloudflare Worker, so the app never exposes the real stream addresses and non-subscribers can't play locked stations.
+- **Static instead of "offline":** when a station's AutoDJ stopped, AzuraCast kept serving a fallback mount, so the stream looked healthy (HTTP 200). I found that AzuraCast's public now-playing API hides private stations (404), switched the Worker to the authenticated station status endpoint, and now block playback when AutoDJ or Icecast is down.
+- **CORS for local testing:** the Worker only allowed the live site, so localhost tests failed silently. I changed it to accept a list of allowed origins.
+- **Email rate limits:** Supabase's built-in email only sends a few sign-in links per hour. I connected custom SMTP through Brevo on my own domain.
 
 ## Definition of Done
 
@@ -92,23 +97,25 @@ A change counts as done when:
 
 I designed Tribes Radio and built it with AI-assisted development (Claude). I set up and configured every service myself (Supabase, Stripe, Cloudflare, DigitalOcean and AzuraCast), tested each part, and debugged problems from logs. As I work through the Meta Front-End Developer certificate, I plan to rewrite parts of the front end by hand.
 
-## Lighthouse audit (Nov 18, 2026, mobile)
+## Lighthouse audit (mobile)
 
-| Performance | Accessibility | Best Practices | SEO |
-|---|---|---|---|
-| 89 | 100 | 100 | 100 |
+| Date | Performance | Accessibility | Best Practices | SEO |
+|---|---|---|---|---|
+| Nov 18, 2026 | 89 | 100 | 100 | 100 |
+| Nov 26, 2026 | **100** | 100 | 100 | 100 |
 
-- Fixed: added a `<main>` landmark (Accessibility 98 → 100).
-- Next: load Google Fonts without blocking rendering (est. 780 ms saved) and reserve space for the subscribe banner to reduce layout shift (CLS 0.102).
+- Added a `<main>` landmark (Accessibility 98 → 100).
+- Loaded Google Fonts asynchronously, so they no longer block the first paint (about 780 ms saved).
+- Cut layout shift (CLS) below 0.1: size-matched fallback font for Inter, `display=optional` for the Bebas Neue headings, and the subscribe banner shown from the first paint instead of popping in.
 
-![Lighthouse scores](docs/lighthouse-after.png)
+| Before | After |
+|---|---|
+| ![Before](docs/lighthouse-before.png) | ![After](docs/lighthouse-after.png) |
 
 ## What's next
 
-- In-app feedback button so listeners can rate the app, report bugs and leave comments (saved to Supabase and reviewed weekly)
 - Launch with real artists' music once license agreements are reviewed
 - Automated tests and a QA test plan
-- Accessibility and Lighthouse improvements
 - Native app store versions
 
 ---

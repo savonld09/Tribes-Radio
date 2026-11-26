@@ -15,7 +15,11 @@
 <meta name="apple-mobile-web-app-title" content="Tribes Radio">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<!-- KAN-4: load Google Fonts without blocking the first paint.
+     KAN-5: Bebas uses display=optional (no late swap = no layout shift); Inter swaps onto a size-matched fallback (app.css). -->
+<link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" onload="this.onload=null;this.rel='stylesheet'">
+<link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Bebas+Neue&display=optional" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bebas+Neue&display=optional"></noscript>
 <link rel="stylesheet" href="app.css">
 </head>
 <body>
@@ -36,10 +40,12 @@
   </header>
   <main>
 
-  <div class="banner" id="subBanner" hidden>
-    <div><b>Unlock every station</b><span id="bannerText"></span></div>
+  <!-- KAN-5: banner is shown from the first paint (most visitors aren't subscribed) so it doesn't push the page down later -->
+  <div class="banner" id="subBanner">
+    <div><b>Unlock every station</b><span id="bannerText"> $5/month for all 5 stations. Cancel anytime.</span></div>
     <button class="btn primary" id="bannerBtn">Subscribe</button>
   </div>
+  <script>try { if (localStorage.getItem('tr_sub') === '1') document.getElementById('subBanner').hidden = true; } catch (e) {}</script>
 
   <section class="hero" id="hero">
     <div class="art" id="art">
